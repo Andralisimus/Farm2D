@@ -35,7 +35,7 @@ public class Crop : MonoBehaviour
 
     void OnMouseDown()
     {
-        Item item = new Item("beet", "Food/beet", 1, Item.TYPEPFOOD, 10, 1, 5f);
+        Item item = Player.getHandItem();
 
         if (readyForAction)
         {
@@ -43,8 +43,10 @@ public class Crop : MonoBehaviour
             {
                 if (item.type == Item.TYPEPFOOD)
                 {
+                    Player.removeItem();
                     step = STEP_GROWS;
                     cropItem = item;
+                    cropItem.count = 2;
                     seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/seeds");
                     StartCoroutine(grow());
                 }
@@ -53,6 +55,7 @@ public class Crop : MonoBehaviour
             {
                 productSpriteRenderer.sprite = Resources.Load<Sprite>("Food/empty");
                 seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/extraDirt");
+                Player.checkIfItemExists(cropItem);
             }
         }
     }
