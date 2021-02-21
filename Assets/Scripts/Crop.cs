@@ -56,6 +56,16 @@ public class Crop : MonoBehaviour
                 productSpriteRenderer.sprite = Resources.Load<Sprite>("Food/empty");
                 seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/extraDirt");
                 Player.checkIfItemExists(cropItem);
+
+                step = STEP_PLOW;
+            }
+            else if(step == STEP_PLOW)
+            {
+                if (item.type == Item.TYPEPLOW)
+                {
+                    seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/empty");
+                    step = STEP_EMPTY;
+                }
             }
         }
     }

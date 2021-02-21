@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     {
         Item item = new Item("carrot", "Food/carrot", 1, Item.TYPEPFOOD, 10, 1, 5f);
         items.Add(item);
+        items.Add(new Item("plow", "Tools/Plow", 0, Item.TYPEPLOW, 0, 0, 0f));
+        items.Add(getEmptyItem());
     }
 
     void Update()

@@ -3,6 +3,7 @@
 public class Item
 {
     public static int TYPEPFOOD = 1;
+    public const int TYPEPLOW = 2;
 
     public string name;
     public string imgUrl;
