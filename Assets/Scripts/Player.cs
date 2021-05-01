@@ -5,17 +5,41 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public static List<Item> items = new List<Item>();
+    public static int lvl = 1;
+    public static float lvlProgress = 0.67f;
+    public static float[] expMultiplier = new float[8];
+    public static List<Item> currentOrder = new List<Item>();
 
     void Start()
     {
-        Item item = new Item("carrot", "Food/carrot", 1, Item.TYPEPFOOD, 10, 1, 5f);
+        Item item = new Item("carrot", "Food/carrot", 20, Item.TYPEPFOOD, 10, 1, 5f);
         items.Add(item);
         items.Add(new Item("plow", "Tools/Plow", 0, Item.TYPEPLOW, 0, 0, 0f));
-        items.Add(new Item("beet", "Food/beet", 3, Item.TYPEPFOOD, 10, 1, 5f));
-        items.Add(new Item("pumpkin", "Food/pumpkin", 3, Item.TYPEPFOOD, 10, 1, 5f));
+        items.Add(new Item("beet", "Food/beet", 20, Item.TYPEPFOOD, 10, 1, 5f));
+        items.Add(new Item("pumpkin", "Food/pumpkin", 20, Item.TYPEPFOOD, 10, 1, 5f));
+        items.Add(new Item("eggplant", "Food/eggplant", 20, Item.TYPEPFOOD, 10, 1, 5f));
         items.Add(getEmptyItem());
         items.Add(getEmptyItem());
-        items.Add(getEmptyItem());
+
+
+        expMultiplier[1] = 0.04f;
+        expMultiplier[2] = 0.03f;
+        expMultiplier[3] = 0.03f;
+        expMultiplier[4] = 0.02f;
+        expMultiplier[5] = 0.02f;
+        expMultiplier[6] = 0.01f;
+        expMultiplier[7] = 0.01f;
+    }
+
+    public static void addExp(int exp)
+    {
+        lvlProgress += exp * expMultiplier[lvl];
+
+        if (lvlProgress >= 1)
+        {
+            lvl++;
+            lvlProgress = 0;
+        }
     }
 
     public static bool isEnoughItems(List<Item> required)
