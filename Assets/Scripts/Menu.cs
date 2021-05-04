@@ -6,18 +6,27 @@ public class Menu : MonoBehaviour
 {
     public GameObject inventoryPrefab;
     public GameObject deskPrefab;
+    public GameObject shopPrefab;
 
-    private bool inventoryOpened;
-    private bool deskOpened;
+    public bool inventoryOpened;
+    public bool deskOpened;
+    public bool shopOpened;
     private GameObject inventory;
     private GameObject desk;
+    private GameObject shop;
 
     public void openInventory()
     {
         if (deskOpened) {
             Destroy(desk);
             deskOpened = false;
-        } else
+        }
+        else if (shopOpened)
+        {
+            Destroy(shop);
+            shopOpened = false;
+        }
+        else 
         {
             if (inventoryOpened)
             {
@@ -37,14 +46,31 @@ public class Menu : MonoBehaviour
         }
     }
 
+    public void openShop()
+    {
+        if(!inventoryOpened && !deskOpened && !shopOpened)
+        {
+            shop = Instantiate(shopPrefab);
+            shop.transform.SetParent(gameObject.transform);
+            shop.GetComponent<RectTransform>().offsetMin = new Vector2(100, 59);
+            shop.GetComponent<RectTransform>().offsetMax = new Vector2(-100, -50);
+            shop.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+
+            shopOpened = true;
+        }
+    }
+
     public void openDesk()
     {
-        desk = Instantiate(deskPrefab);
-        desk.transform.SetParent(gameObject.transform);
-        desk.GetComponent<RectTransform>().offsetMin = new Vector2(100, 59);
-        desk.GetComponent<RectTransform>().offsetMax = new Vector2(-100, -50);
-        desk.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        if (!inventoryOpened && !deskOpened && !shopOpened)
+        {
+            desk = Instantiate(deskPrefab);
+            desk.transform.SetParent(gameObject.transform);
+            desk.GetComponent<RectTransform>().offsetMin = new Vector2(100, 59);
+            desk.GetComponent<RectTransform>().offsetMax = new Vector2(-100, -50);
+            desk.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
-        deskOpened = true;
+            deskOpened = true;
+        }
     }
 }

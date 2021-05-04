@@ -6,18 +6,18 @@ public class Player : MonoBehaviour
 {
     public static List<Item> items = new List<Item>();
     public static int lvl = 1;
-    public static float lvlProgress = 0.67f;
+    public static float lvlProgress = 0;
     public static float[] expMultiplier = new float[8];
     public static List<Item> currentOrder = new List<Item>();
+    public static int money = 200;
 
     void Start()
     {
-        Item item = new Item("carrot", "Food/carrot", 20, Item.TYPEPFOOD, 10, 1, 5f);
-        items.Add(item);
+        items.Add(getEmptyItem());
         items.Add(new Item("plow", "Tools/Plow", 0, Item.TYPEPLOW, 0, 0, 0f));
-        items.Add(new Item("beet", "Food/beet", 20, Item.TYPEPFOOD, 10, 1, 5f));
-        items.Add(new Item("pumpkin", "Food/pumpkin", 20, Item.TYPEPFOOD, 10, 1, 5f));
-        items.Add(new Item("eggplant", "Food/eggplant", 20, Item.TYPEPFOOD, 10, 1, 5f));
+        items.Add(getEmptyItem());
+        items.Add(getEmptyItem());
+        items.Add(getEmptyItem());
         items.Add(getEmptyItem());
         items.Add(getEmptyItem());
 
