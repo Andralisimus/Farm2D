@@ -5,14 +5,17 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public static List<Item> items = new List<Item>();
-    public static int lvl = 1;
+    public static int lvl = 3;
     public static float lvlProgress = 0;
     public static float[] expMultiplier = new float[8];
-    public static List<Item> currentOrder = new List<Item>();
+    public static List<List<Item>> currentOrders = new List<List<Item>>();
     public static int money = 200;
 
     void Start()
     {
+        currentOrders.Add(new List<Item>());
+        currentOrders.Add(new List<Item>());
+
         items.Add(getEmptyItem());
         items.Add(new Item("plow", "Tools/Plow", 0, Item.TYPEPLOW, 0, 0, 0f));
         items.Add(getEmptyItem());

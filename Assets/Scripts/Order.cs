@@ -6,23 +6,31 @@ using UnityEngine.UI;
 
 public class Order : MonoBehaviour
 {
+    public int id;
+
     List<Image> productImages;
     List<Text> productCount;
 
     List<Item> allItems = new List<Item>();
     List<Item> required = new List<Item>();
 
+    private Text reward;
+    private int moneyToRecive;
+    private int expToRecive;
+
     void Start()
     {
+        reward = GetComponentsInChildren<Text>()[0];
+
         productImages = GetComponentsInChildren<Image>().ToList();
         productCount = GetComponentsInChildren<Text>().ToList();
 
         GetComponentInChildren<Button>().onClick.AddListener(delegate { completeOrder(); });
 
-        allItems.Add(new Item("carrot", "Food/carrot", 1, Item.TYPEPFOOD, 10, 1, 5f));
-        allItems.Add(new Item("beet", "Food/beet", 1, Item.TYPEPFOOD, 10, 1, 5f));
-        allItems.Add(new Item("pumpkin", "Food/pumpkin", 1, Item.TYPEPFOOD, 10, 1, 5f));
-        allItems.Add(new Item("eggplant", "Food/eggplant", 1, Item.TYPEPFOOD, 10, 1, 5f));
+        if (Player.lvl > 0) allItems.Add(new Item("carrot", "Food/carrot", 1, Item.TYPEPFOOD, 10, 1, 5f));
+        if (Player.lvl > 1) allItems.Add(new Item("beet", "Food/beet", 1, Item.TYPEPFOOD, 10, 2, 5f));
+        if (Player.lvl > 2) allItems.Add(new Item("pumpkin", "Food/pumpkin", 1, Item.TYPEPFOOD, 10, 3, 5f));
+        if (Player.lvl > 3) allItems.Add(new Item("eggplant", "Food/eggplant", 1, Item.TYPEPFOOD, 10, 4, 5f));
 
         createOrder();
     }
@@ -40,24 +48,25 @@ public class Order : MonoBehaviour
 
     private void createOrder()
     {
-        if (Player.currentOrder.Count == 0)
+        if (Player.currentOrders[id].Count == 0)
         {
             for (int i = 0; i < generateCount(); i++)
             {
                 createItemForOrder();
             }
         }
-        else required = Player.currentOrder;
+        else required = Player.currentOrders[id];
 
 
 
         for (int i = 0; i < required.Count; i++)
         {
             productImages[i + 1].sprite = Resources.Load<Sprite>(required[i].imgUrl);
-            productCount[i + 1].text = "x" + required[i].count.ToString();
+            productCount[i + 2].text = "x" + required[i].count.ToString();
         }
 
-        Player.currentOrder = required;
+        generateReward();
+        Player.currentOrders[id] = required;
     }
 
     private void completeOrder()
@@ -68,26 +77,49 @@ public class Order : MonoBehaviour
             {
                 Player.removeItemWithName(required[i].name, required[i].count);
             }
-            Player.addExp(1);
-            Player.currentOrder.Clear();
+            Player.addExp(expToRecive);
+            Player.money += moneyToRecive;
+            Player.currentOrders[id].Clear();
             Destroy(gameObject);
         }
     }
 
+    private void generateReward()
+    {
+        switch (Player.lvl)
+        {
+            case 1:
+                moneyToRecive = Random.Range(6, 15); //6..14
+                expToRecive = Random.Range(1, 3); //1..2
+                break;
+            case 2:
+                moneyToRecive = Random.Range(9, 21); //9..20
+                expToRecive = Random.Range(1, 5); //1..4
+                break;
+            default:
+                moneyToRecive = Random.Range(20, 35); //20..34
+                expToRecive = Random.Range(4, 8); //4..7
+                break;    
+        }
+        reward.text = $"You will recive {expToRecive} exp and {moneyToRecive}$";
+    }
 
     private int generateCount()
     {
-        if (Player.lvl == 1) return 2;
-        if (Player.lvl > 1 && Player.lvl < 4) return Random.Range(1, 3);
-        if (Player.lvl >= 4) return 2;
+        if (Player.lvl == 1) return 1;
+        if (Player.lvl == 2) return Random.Range(1, 3); //1..2
+        if (Player.lvl == 3) return Random.Range(1, 3); //1..2
+        if (Player.lvl == 4) return Random.Range(2, 4); //2..3
 
-        return 2;
+        return 3;
     }
 
     private int generateAmount()
     {
-        if (Player.lvl < 4) return Random.Range(1, 3);
-        if (Player.lvl >= 4) return Random.Range(2, 5);
+        if (Player.lvl == 1) return Random.Range(1, 3); //1..2
+        if (Player.lvl == 2) return Random.Range(1, 3); //1..2
+        if (Player.lvl == 3) return Random.Range(1, 4); //1..3
+        if (Player.lvl == 4) return Random.Range(2, 4); //2..3
 
         return 4;
     }

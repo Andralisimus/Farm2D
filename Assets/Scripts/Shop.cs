@@ -34,9 +34,9 @@ public class Shop : MonoBehaviour
     {
         allProductList.Clear();
         allProductList.Add(new Item("carrot", "Food/carrot", 1, Item.TYPEPFOOD, 25, 1, 5f));
-        allProductList.Add(new Item("beet", "Food/beet", 1, Item.TYPEPFOOD, 10, 1, 5f));
-        allProductList.Add(new Item("pumpkin", "Food/pumpkin", 1, Item.TYPEPFOOD, 10, 1, 5f));
-        allProductList.Add(new Item("eggplant", "Food/eggplant", 1, Item.TYPEPFOOD, 10, 1, 5f));
+        allProductList.Add(new Item("beet", "Food/beet", 1, Item.TYPEPFOOD, 10, 2, 5f));
+        allProductList.Add(new Item("pumpkin", "Food/pumpkin", 1, Item.TYPEPFOOD, 10, 3, 5f));
+        allProductList.Add(new Item("eggplant", "Food/eggplant", 1, Item.TYPEPFOOD, 10, 4, 5f));
     }
 
 }

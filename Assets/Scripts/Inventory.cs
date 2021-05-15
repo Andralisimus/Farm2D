@@ -10,15 +10,19 @@ public class Inventory : MonoBehaviour
     public static Slot selectedSlot = null;
 
     private Text lvlText;
+    private Text moneyText;
     private RectTransform barRectTransform;
 
     void Start()
     {
-        lvlText = GetComponentInChildren<Text>();
+        lvlText = GetComponentsInChildren<Text>()[0];
+        moneyText = GetComponentsInChildren<Text>()[1];
+
         barRectTransform = GetComponentsInChildren<Image>()[3].GetComponent<RectTransform>();
 
         barRectTransform.localScale = new Vector3(Player.lvlProgress, 1, 1);
         lvlText.text = "Lvl " + Player.lvl;
+        moneyText.text = Player.money + "$";
 
         slots = GetComponentsInChildren<Slot>().ToList();
 
