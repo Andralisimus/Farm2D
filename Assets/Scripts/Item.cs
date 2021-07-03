@@ -1,5 +1,5 @@
 ﻿
-
+[System.Serializable]
 public class Item
 {
     public static int TYPEPFOOD = 1;

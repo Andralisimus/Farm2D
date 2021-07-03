@@ -1,29 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public static List<Item> items = new List<Item>();
-    public static int lvl = 3;
-    public static float lvlProgress = 0;
+    public static int lvl;
+    public static float lvlProgress;
     public static float[] expMultiplier = new float[8];
     public static List<List<Item>> currentOrders = new List<List<Item>>();
-    public static int money = 200;
+    public static int money;
 
     void Start()
     {
         currentOrders.Add(new List<Item>());
         currentOrders.Add(new List<Item>());
 
-        items.Add(getEmptyItem());
-        items.Add(new Item("plow", "Tools/Plow", 0, Item.TYPEPLOW, 0, 0, 0f));
-        items.Add(getEmptyItem());
-        items.Add(getEmptyItem());
-        items.Add(getEmptyItem());
-        items.Add(getEmptyItem());
-        items.Add(getEmptyItem());
+        //DataBase.ClearDataBase();
+        items = DataBase.LoadInventory();
 
+        var playerData = DataBase.LoadPlayerData();
+        money = playerData.money;
+        lvlProgress = playerData.lvlProgress;
+        lvl = playerData.lvl;
 
         expMultiplier[1] = 0.04f;
         expMultiplier[2] = 0.03f;
@@ -80,6 +78,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        DataBase.Save();
     }
 
     public static Item getHandItem()
@@ -101,6 +100,7 @@ public class Player : MonoBehaviour
         {
             items[0].count -= 1;
         }
+        DataBase.Save();
     }
 
     public static void checkIfItemExists(Item item)
@@ -119,6 +119,7 @@ public class Player : MonoBehaviour
         {
             addItemToInventory(item);
         }
+        DataBase.Save();
     }
 
     private static void addItemToInventory(Item item)
@@ -137,5 +138,6 @@ public class Player : MonoBehaviour
         {
             items.Add(item);
         }
+        DataBase.Save();
     }
 }

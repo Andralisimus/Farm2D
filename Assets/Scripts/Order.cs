@@ -80,6 +80,7 @@ public class Order : MonoBehaviour
             Player.addExp(expToRecive);
             Player.money += moneyToRecive;
             Player.currentOrders[id].Clear();
+            DataBase.Save();
             Destroy(gameObject);
         }
     }

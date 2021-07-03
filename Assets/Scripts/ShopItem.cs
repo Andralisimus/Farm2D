@@ -28,6 +28,7 @@ public class ShopItem : MonoBehaviour
             Player.checkIfItemExists(item);
             Player.money -= item.price;
             moneyText.text = Player.money + "$";
+            DataBase.Save();
         }
     }
 
