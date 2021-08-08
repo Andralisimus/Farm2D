@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public static float[] expMultiplier = new float[8];
     public static List<List<Item>> currentOrders = new List<List<Item>>();
     public static int money;
+    private long offlineTime = 0;
 
     void Start()
     {
@@ -19,6 +20,9 @@ public class Player : MonoBehaviour
         items = DataBase.LoadInventory();
 
         var playerData = DataBase.LoadPlayerData();
+
+        offlineTime = playerData.timeOffline;
+
         money = playerData.money;
         lvlProgress = playerData.lvlProgress;
         lvl = playerData.lvl;
@@ -78,7 +82,6 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        DataBase.Save();
     }
 
     public static Item getHandItem()
@@ -100,7 +103,6 @@ public class Player : MonoBehaviour
         {
             items[0].count -= 1;
         }
-        DataBase.Save();
     }
 
     public static void checkIfItemExists(Item item)
@@ -119,7 +121,6 @@ public class Player : MonoBehaviour
         {
             addItemToInventory(item);
         }
-        DataBase.Save();
     }
 
     private static void addItemToInventory(Item item)
@@ -138,6 +139,10 @@ public class Player : MonoBehaviour
         {
             items.Add(item);
         }
+    }
+
+    void OnApplicationQuit()
+    {
         DataBase.Save();
     }
 }

@@ -50,7 +50,8 @@ public class DataBase
     public static void SavePlayerData()
     {
         FileStream stream = new FileStream(playerDataPath, FileMode.Create);
-        PlayerData playerData = new PlayerData(Player.money, Player.lvl, Player.lvlProgress);
+        string currentTime = System.DateTime.Now.ToBinary().ToString();
+        PlayerData playerData = new PlayerData(Player.money, Player.lvl, Player.lvlProgress, currentTime);
         binaryFormatter.Serialize(stream, playerData);
         stream.Close();
     }
@@ -64,12 +65,26 @@ public class DataBase
             PlayerData playerData = (PlayerData)binaryFormatter.Deserialize(stream);
             stream.Close();
 
+            playerData.timeOffline = GetOfflineTime(playerData.lastSavedTime);
+
             return playerData;
-        } else return new PlayerData(100, 1, 0);
+        } else return new PlayerData(100, 1, 0, "");
     }
     public static void ClearDataBase()
     {
         if (File.Exists(inventoryPath)) { File.Delete(inventoryPath); }
         if (File.Exists(playerDataPath)) { File.Delete(playerDataPath); }
+    }
+
+    private static long GetOfflineTime(string lastSavedTime)
+    {
+        var currentTime = System.DateTime.Now;
+        var lastSavedTimeConverted = System.Convert.ToInt64(lastSavedTime);
+
+        System.DateTime oldTime = System.DateTime.FromBinary(lastSavedTimeConverted);
+
+        System.TimeSpan difference = currentTime.Subtract(oldTime);
+
+        return (long)difference.TotalSeconds;
     }
 }
