@@ -9,7 +9,9 @@ public class Player : MonoBehaviour
     public static float[] expMultiplier = new float[8];
     public static List<List<Item>> currentOrders = new List<List<Item>>();
     public static int money;
+
     private long offlineTime = 0;
+    public List<Crop> crops;
 
     void Start()
     {
@@ -34,6 +36,13 @@ public class Player : MonoBehaviour
         expMultiplier[5] = 0.02f;
         expMultiplier[6] = 0.01f;
         expMultiplier[7] = 0.01f;
+
+
+        var cropsData = DataBase.LoadCrops();
+        for (int i = 0; i < crops.Count; i++)
+        {
+            crops[i].LaunchInitProcess(offlineTime, cropsData[i]);
+        }
     }
 
     public static void addExp(int exp)
@@ -144,5 +153,12 @@ public class Player : MonoBehaviour
     void OnApplicationQuit()
     {
         DataBase.Save();
+
+        List<Item> cropsItems = new List<Item>();
+        foreach(Crop crop in crops)
+        {
+            cropsItems.Add(crop.Save());
+        }
+        DataBase.SaveCrops(cropsItems);
     }
 }

@@ -7,12 +7,44 @@ public class DataBase
 {
     private static string inventoryPath = Application.persistentDataPath + "/inventory.path";
     private static string playerDataPath = Application.persistentDataPath + "/playerData.path";
+    private static string cropsDataPath = Application.persistentDataPath + "/crops.path";
     private static BinaryFormatter binaryFormatter = new BinaryFormatter();
 
     public static void Save()
     {
         SaveInventory();
         SavePlayerData();
+    }
+
+    public static void SaveCrops(List<Item> crops)
+    {
+        FileStream stream = new FileStream(cropsDataPath, FileMode.Create);
+        binaryFormatter.Serialize(stream, crops);
+        stream.Close();
+    }
+
+    public static List<Item> LoadCrops()
+    {
+        if (File.Exists(cropsDataPath))
+        {
+            FileStream stream = new FileStream(cropsDataPath, FileMode.Open);
+
+            List<Item> items = (List<Item>)binaryFormatter.Deserialize(stream);
+            stream.Close();
+
+            return items;
+        }
+        else
+        {
+            List<Item> startCrops = new List<Item>();
+
+            startCrops.Add(Player.getEmptyItem());
+            startCrops.Add(Player.getEmptyItem());
+            startCrops.Add(Player.getEmptyItem());
+            startCrops.Add(Player.getEmptyItem());
+
+            return startCrops;
+        }
     }
 
     public static void SaveInventory()
@@ -68,12 +100,13 @@ public class DataBase
             playerData.timeOffline = GetOfflineTime(playerData.lastSavedTime);
 
             return playerData;
-        } else return new PlayerData(100, 1, 0, "");
+        } else return new PlayerData(200, 4, 0, "");
     }
     public static void ClearDataBase()
     {
         if (File.Exists(inventoryPath)) { File.Delete(inventoryPath); }
         if (File.Exists(playerDataPath)) { File.Delete(playerDataPath); }
+        if (File.Exists(cropsDataPath)) { File.Delete(cropsDataPath); }
     }
 
     private static long GetOfflineTime(string lastSavedTime)

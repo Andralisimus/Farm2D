@@ -13,6 +13,7 @@ public class Crop : MonoBehaviour
     private SpriteRenderer productSpriteRenderer;
     private SpriteRenderer cropSpriteRenderer;
 
+    private string timeGrowStarted = "";
     private Item cropItem;
     private int step = 0;
 
@@ -48,6 +49,7 @@ public class Crop : MonoBehaviour
                     cropItem = item;
                     cropItem.count = 2;
                     seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/seeds");
+                    timeGrowStarted = System.DateTime.Now.ToBinary().ToString();
                     StartCoroutine(grow());
                 }
             }
@@ -70,14 +72,87 @@ public class Crop : MonoBehaviour
         }
     }
 
-    private IEnumerator grow()
-    {
-        yield return new WaitForSeconds(cropItem.timeToGrow);
+    public Item Save()
+    { 
+        if (step == STEP_GROWS)
+        {
+            var currentTime = System.DateTime.Now;
+            var lastSavedTimeConverted = System.Convert.ToInt64(timeGrowStarted);
 
+            System.DateTime oldTime = System.DateTime.FromBinary(lastSavedTimeConverted);
+            System.TimeSpan difference = currentTime.Subtract(oldTime);
+
+            cropItem.timeToGrow = (long)difference.TotalSeconds;
+            cropItem.type = STEP_GROWS;
+
+            return cropItem;
+        }
+        else if (step == STEP_READY)
+        {
+            cropItem.type = STEP_READY;
+            return cropItem;
+        }
+        else if (step == STEP_PLOW)
+        {
+            var saveItem = Player.getEmptyItem();
+            saveItem.type = STEP_PLOW;
+            return saveItem;
+        }
+        else return Player.getEmptyItem();  
+    }
+
+    public void LaunchInitProcess(long offlineTime, Item item)
+    {
+        StartCoroutine(UpdateWithSavedData(offlineTime, item));
+    }
+
+    public IEnumerator UpdateWithSavedData(long offlineTime, Item item)
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (item.type == STEP_GROWS) {
+            item.type = Item.TYPEPFOOD;
+            cropItem = item;
+
+            if (offlineTime > item.timeToGrow)
+            {
+                OnStepReady();
+            }
+            else
+            {
+                cropItem.timeToGrow = item.timeToGrow - offlineTime;
+                seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/seeds");
+                timeGrowStarted = System.DateTime.Now.ToBinary().ToString();
+                StartCoroutine(grow());
+            }
+
+        }
+        else if(item.type == STEP_READY)
+        {
+            item.type = Item.TYPEPFOOD;
+            cropItem = item;
+            OnStepReady();
+        }
+        else if (item.type == STEP_PLOW)
+        {
+            productSpriteRenderer.sprite = Resources.Load<Sprite>("Food/empty");
+            seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/extraDirt");
+            step = STEP_PLOW;
+        }
+    }
+
+    private void OnStepReady()
+    {
         seedSpriteRenderer.sprite = Resources.Load<Sprite>("Food/empty");
         productSpriteRenderer.sprite = Resources.Load<Sprite>(cropItem.imgUrl);
 
         step = STEP_READY;
+    }
+
+    private IEnumerator grow()
+    {
+        yield return new WaitForSeconds(cropItem.timeToGrow);
+        OnStepReady();
     }
 
     private void FixedUpdate()
